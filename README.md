@@ -1,5 +1,4 @@
-
-t_status
+# bot_status
 
 This is a django project that provides an api to monitor the status of some python apps running on a centos server. The api returns a json response with the process information and the error message (if any) for each app.
 

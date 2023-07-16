@@ -36,7 +36,7 @@ processes = [
     {
         'name': 'copn.py',
         'path': '/home/novogad/payzocard_bot_forward/copn.py',
-        'log': None
+        'log': '/home/novogad/payzocard_bot_forward/copn.log' 
     },
     {
         'name': 'main.py',

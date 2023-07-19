@@ -3,6 +3,9 @@ import subprocess
 import logging
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from collections import deque
+import subprocess
+
 
 # Set up a logger with a file handler and a formatter
 logger = logging.getLogger(__name__)
@@ -61,25 +64,22 @@ def check_process_status(process_name):
     # If not found, return None
     return None
 
-# Define a function to read the last line of a log file
-def read_last_log_line(log_file):
-    # Open the log file in read mode
-    with open(log_file, 'r') as f:
-        # Seek to the end of the file
-        f.seek(0, os.SEEK_END)
-        # Get the file size in bytes
-        fsize = f.tell()
-        # Loop backwards until a newline is found or the start of the file is reached
-        while fsize > 0:
-            fsize -= 1
-            f.seek(fsize)
-            ch = f.read(1)
-            if ch == '\n':
-                break
-        # Return the last line of the file
-        return f.readline()
+# Define a function to read the last n lines of a log file using tail
+def read_last_log_lines_tail(log_file, n):
+    # Run the tail command with the -n option and the log file name as arguments
+    # Capture the output and error streams as bytes objects
+    output, error = subprocess.Popen(['tail', '-n', str(n), log_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+    # Decode the output and error streams as strings
+    output = output.decode()
+    error = error.decode()
+    # If there is no error, return the output as a list of lines
+    if not error:
+        return output.splitlines()
+    # If there is an error, raise an exception with the error message
+    else:
+        raise Exception(error)
 
-# Define an api view function to handle the request for the status of the processes
+
 @api_view(['GET'])
 def get_process_status(request):
     # Indent the code inside the function by four spaces
@@ -94,23 +94,32 @@ def get_process_status(request):
         if status:
             # Check if the process has a log file
             if process['log']:
-                # Read the last line of the log file
-                last_log_line = read_last_log_line(process['log'])
-                # Check if the last line contains an error message
-                if 'error' in last_log_line.lower():
-                    # Log an error message with the process name and the log line
-                    logger.error(f"{process['name']} is running with error: {last_log_line}")
-                    # Add an entry to the status dictionary with the process name, error log and status code 2 (run with error)
-                    status_dict[process['name']] = 'running with error'
-                    status_dict['error_log'] = last_log_line.strip()
-                    status_dict['status_code'] = 2
-                else:
-                    # Log an info message with the process name and status code 1 (running)
-                    logger.info(f"{process['name']} is running")
-                    # Add an entry to the status dictionary with the process name, error log and status code 1 (running)
-                    status_dict[process['name']] = 'running'
-                    status_dict['error_log'] = last_log_line.strip()
-                    status_dict['status_code'] = 1
+                # Try to read the last 10 lines of the log file using tail
+                try:
+                    last_log_lines = read_last_log_lines_tail(process['log'], 10)
+                    # Check if any of the lines contains an error message
+                    if any('error' in line.lower() for line in last_log_lines):
+                        # Log an error message with the process name and the log lines
+                        logger.error(f"{process['name']} is running with error: {' '.join(last_log_lines)}")
+                        # Add an entry to the status dictionary with the process name, error log and status code 2 (run with error)
+                        status_dict[process['name']] = 'running with error'
+                        status_dict['error_log'] = ' '.join(last_log_lines).strip()
+                        status_dict['status_code'] = 2
+                    else:
+                        # Log an info message with the process name and status code 1 (running)
+                        logger.info(f"{process['name']} is running")
+                        # Add an entry to the status dictionary with the process name, no log and status code 1 (running)
+                        status_dict[process['name']] = 'running'
+                        status_dict['error_log'] = 'No log'
+                        status_dict['status_code'] = 1
+                # If an exception occurs, log it and add an entry to the status dictionary with the process name, error message and status code 3 (failed to read log)
+                except Exception as e:
+                    # Log the exception with traceback information
+                    logger.exception(f"Failed to read last 10 lines of {process['log']}")
+                    # Add an entry to the status dictionary with the process name, error message and status code 3 (failed to read log)
+                    status_dict[process['name']] = 'failed to read log'
+                    status_dict['error_log'] = str(e)
+                    status_dict['status_code'] = 3
             else:
                 # Log an info message with the process name and status code 1 (running)
                 logger.info(f"{process['name']} is running")

@@ -46,7 +46,7 @@ python manage.py migrate
 - Start gunicorn on port 8080:
 
 ```bash
-gunicorn --bind 0.0.0.0:8080 --pid /var/run/gunicorn/bot_status.pid --access-logfile /var/log/gunicorn/bot_status_access.log --error-logfile /var/log/gunicorn/bot_status_error.log bot_status.wsgi:application
+gunicorn --bind 0.0.0.0:8080 bot_status.wsgi:application
 ```
 
 - Send a GET request to the api endpoint:

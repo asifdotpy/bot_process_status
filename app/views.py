@@ -32,8 +32,8 @@ processes = [
         'log': None
     },
     {
-        'name': 'app.py',
-        'path': '/home/novogad/novoapi/app.py',
+        'name': 'wsgi-loader.py',
+        'path': '/home/novogad/novoapi/venv/bin/python /opt/cpanel/ea-ruby24/root/usr/share/passenger/helper-scripts/wsgi-loader.py',
         'log': None
     },
     {

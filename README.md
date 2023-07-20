@@ -60,25 +60,28 @@ curl http://localhost:8080/bot_status/
 ```json
 [
     {
-        "status": {
-            "pid": "836",
-            "user": "root",
-            "cpu": "0.04",
-            "mem": "0.77",
-            "command": "/home/novogad/payzocard_bot_forward/myenv/bin/python goiu_v3.py"
-        },
-        "message": "goiu_v3.py is running"
+        "goiu_v3.py": "running",
+        "error_log": "No log",
+        "status_code": 1
     },
     {
-        "status": {
-            "pid": "837",
-            "user": "root",
-            "cpu": "0.04",
-            "mem": "0.84",
-            "command": "/home/novogad/payzocard_bot_forward/myenv/bin/python copn.py"
-        },
-        "message": "copn.py is running"
+        "copn.py": "running",
+        "error_log": "No log",
+        "status_code": 1
     },
-    # ...
+    {
+        "main.py": "running",
+        "error_log": "No log",
+        "status_code": 1
+    },
+    {
+        "app.py": "down",
+        "path": "/home/novogad/novoapi/app.py",
+        "status_code": 3
+    },
+    {
+        "main.py": "running",
+        "error_log": "No log",
+        "status_code": 1
+    }
 ]
-

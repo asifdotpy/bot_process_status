@@ -23,3 +23,13 @@
 2023-07-19 04:36:49,098 - INFO - main.py is running
 2023-07-19 04:36:49,116 - WARNING - app.py stopped or not running at /home/novogad/novoapi/app.py
 2023-07-19 04:36:49,133 - INFO - main.py is running
+2023-07-21 03:53:22,841 - INFO - goiu_v3.py is running
+2023-07-21 03:53:22,867 - INFO - copn.py is running
+2023-07-21 03:53:22,886 - INFO - main.py is running
+2023-07-21 03:53:22,905 - WARNING - wsgi-loader.py stopped or not running at /home/novogad/novoapi/venv/bin/python /opt/cpanel/ea-ruby24/root/usr/share/passenger/helper-scripts/wsgi-loader.py
+2023-07-21 03:53:22,921 - INFO - main.py is running
+2023-07-21 04:17:12,684 - INFO - goiu_v3.py is running
+2023-07-21 04:17:12,705 - INFO - copn.py is running
+2023-07-21 04:17:12,721 - INFO - main.py is running
+2023-07-21 04:17:12,737 - WARNING - wsgi-loader.py stopped or not running at /home/novogad/novoapi/venv/bin/python /opt/cpanel/ea-ruby24/root/usr/share/passenger/helper-scripts/wsgi-loader.py
+2023-07-21 04:17:12,754 - INFO - main.py is running
